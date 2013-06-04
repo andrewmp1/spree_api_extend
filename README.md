@@ -6,6 +6,11 @@ A couple quick additional methods on the api to better support JS MVC frontends.
 - Create users (don't have to be an admin) @ /api/users. Returns api key in response
 - Login users via POST /api/sessions w/ json: "{ session: {email: "email", password: "password"}}"". returns api key in response.
 - Get current order & user @ "/api/status"
+- get /api/orders w/ a logged in 'non-admin' user will return all orders belonging to that user.
+
+CAUTION
+------------
+These modifications are changing the default spree authorization for the api that could introduce security issues.  Be sure you look through the changes before you do anything productiony!
 
 Installation
 ------------
