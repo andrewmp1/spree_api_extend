@@ -1,4 +1,3 @@
-
 module Spree
   module Api
     class UserSessionController < Spree::Api::BaseController
@@ -13,17 +12,19 @@ module Spree
       # }
       # TODO. create/load session ?
       def create
-        if user
-          @order = current_order
-          @user = user
-          respond_with(user, :status => 200, :default_template => :show)
-        end
+        # if user.present?
+        #   @order = current_order
+        #   @user = user
+        #   return respond_with(@user, :status => 200, :default_template => :show)
+        # end
 
-        user = Spree::User.find_for_database_authentication(:login => params[:session][:email])
+        user = Spree::User.find_for_database_authentication(:login => params[:session][:login])
         if user && user.valid_password?(params[:session][:password])
+          # Cookie sessions are our friend... for now.
+          # sign_in(user, :event => :authentication, :bypass => true)
           @order = current_order(true)
           @user = user
-          respond_with(user, :status => 200, :default_template => :show)
+          return respond_with(@user, :status => 200, :default_template => :show)
         else
           render "spree/api/errors/not_found", :status => 404 and return
         end
@@ -34,7 +35,7 @@ module Spree
         if user
           @order = current_order
           @user = user
-          respond_with(user, :status => 200, :default_template => :show)
+          respond_with(@user, :status => 200, :default_template => :show)
         else
           render "spree/api/errors/not_found", :status => 404 and return
         end
@@ -52,12 +53,6 @@ module Spree
 
       def user
         @current_api_user || try_spree_current_user
-      end
-
-      def authenticate_spree_user
-        build_resource
-        resource = Spree::User.find_for_database_authentication(:login=>params[:login])
-        return invalid_login_attempt unless resource
       end
     end
   end
