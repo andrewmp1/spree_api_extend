@@ -17,7 +17,6 @@ module Spree
         #   @user = user
         #   return respond_with(@user, :status => 200, :default_template => :show)
         # end
-
         user = Spree::User.find_for_database_authentication(:login => params[:session][:login])
         if user && user.valid_password?(params[:session][:password])
           # Cookie sessions are our friend... for now.
